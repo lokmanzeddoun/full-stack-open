@@ -8,7 +8,7 @@
 		"start": "node --env-file=.env index.js",
 		"dev": "nodemon --env-file=.env index.js",
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"build:front": "rm -rf dist && cd ../Part2/phonebook && npm run build && cp -r dist ../../part3",
+		"build:front": "rm -rf dist && cd ../Part2/phonebook && npm run build && cp -r dist ../../Part3",
 		"deploy:full": "npm run build:front && git add . && git commit -m front && git push"
 	},
 	"keywords": [],
