@@ -44,6 +44,9 @@ app.get("/api/persons/:id", (req, res, next) => {
 	const p = persons.find((item) => item.id === +req.params.id);
 	res.status(200).json(p);
 });
+app.get("/", (req, res, next) => {
+	res.send(`<h1> Hello To The phonebook backend app</h1>`)
+})
 app.delete("/api/persons/:id", (req, res, next) => {
 	const p = persons.filter((item) => item.id !== +req.params.id);
 	persons = p;
