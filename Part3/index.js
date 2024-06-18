@@ -33,9 +33,8 @@ let persons = [
 ];
 app.get("/api/persons", (req, res, next) => {
 	res.status(200).json(persons);
-});
-
-app.get("/info", (req, res, next) => {
+});//full-stack-open-2yxj.onrender.com
+https: app.get("/info", (req, res, next) => {
 	const currentDate = new Date();
 	const htmlContent = `<p>PhoneBook has info for ${persons.length}  people </p>
 <p>${currentDate}</p>`;
