@@ -92,7 +92,9 @@ const errorHandler = (err, req, res, next) => {
   if (err.name === "CastError") {
     return res.status(400).send({ error: "mal formatted id" })
   } else if (err.name === "ValidationError") {
-    return res.status(400).send({ error: err.message })
+    return res
+			.status(400)
+			.send({ error: err.message, type: "ValidationError" })
   }
   next(err)
 }
@@ -106,5 +108,6 @@ app.listen(PORT, () => {
     })
     .catch((err) => {
       console.log(`error connecting to mongoDB ${err.message}`)
+      process.exit(1)
     })
 })
