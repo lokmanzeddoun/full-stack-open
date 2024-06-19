@@ -8,6 +8,7 @@
 		"start": "node --env-file=.env index.js",
 		"dev": "nodemon --env-file=.env index.js",
 		"test": "echo \"Error: no test specified\" && exit 1",
+		"lint":"eslint .",
 		"build:front": "rm -rf dist && cd ../Part2/phonebook && npm run build && cp -r dist ../../Part3",
 		"deploy:full": "npm run build:front && git add . && git commit -m front && git push"
 	},
@@ -21,6 +22,10 @@
 		"morgan": "^1.10.0"
 	},
 	"devDependencies": {
-		"@types/express": "^4.17.21"
+		"@eslint/js": "^9.5.0",
+		"@stylistic/eslint-plugin-js": "^2.2.2",
+		"@types/express": "^4.17.21",
+		"eslint": "^9.5.0",
+		"globals": "^15.6.0"
 	}
 }
