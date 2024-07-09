@@ -69,13 +69,12 @@ const Person = ({ name, number, deleteHandler, id }) => {
 
 const App = () => {
 	const handleOnClickDelete = (id) => {
-		const person = persons.find((n) => n.id === id);
+		const person = persons.find((n) => n._id === id);
 		if (window.confirm(`Delete ${person.name} ?`)) {
 			personService
 				.deletePerson(id)
-				.then((res) => console.log("deleted successfully", res))
+				.then(() => setPersons(persons.filter((persons) => persons._id !== id)))
 				.catch((err) => console.log(err));
-			setPersons(persons.filter((persons) => persons.id !== id));
 		}
 	};
 	const [persons, setPersons] = useState([]);
@@ -95,20 +94,21 @@ const App = () => {
 			: persons;
 	};
 
-	const personAfterFilter = filter().map(({ id, name, number }) => (
-		<Person
-			key={id}
-			name={name}
-			number={number}
-			deleteHandler={handleOnClickDelete}
-			id={id}
-		/>
+	const personAfterFilter = filter().map((p) => (
+		<>
+			<Person
+				key={p.name}
+				name={p.name}
+				number={p.number}
+				deleteHandler={handleOnClickDelete}
+				id={p._id.toString()}
+			/>
+		</>
 	));
 
 	const submitForm = (e) => {
 		e.preventDefault();
 		const newPerson = {
-			// id: persons.length + 1,
 			name: newName,
 			number: newNumber,
 		};
@@ -120,30 +120,34 @@ const App = () => {
 			return;
 		} else if (p && p.number !== newPerson.number) {
 			const changedPerson = { ...p, number: newPerson.number };
-			console.log(changedPerson);
 			if (
 				window.confirm(
 					`${newName} is already added to phonebook, replace the old number with a new one?`
 				)
 			) {
 				personService
-					.updatePerson(p.id, changedPerson)
+					.updatePerson(p._id, changedPerson)
 					.then((np) => {
 						setChangeMessage(`number of ${newName} is successfully updated`);
-						setPersons(persons.map((n) => (n.id !== p.id ? n : np)));
+						setPersons(persons.map((n) => (n._id !== p._id ? n : np)));
 						setNewName("");
 						setNewNumber("");
 						setTimeout(() => {
 							setChangeMessage(null);
 						}, 2000);
 					})
-					.catch(() => {
+					.catch((err) => {
+						let msg;
 						setIsError(true);
-						setChangeMessage(
-							`Information of ${newName} has already been removed from server`
-						);
+						if (err.response.data.type === "ValidationError") {
+							msg = err.response.data.error;
+						} else {
+							msg = `Information of ${newName} has already been removed from server`;
+						}
+						setChangeMessage(msg);
 						setTimeout(() => {
 							setChangeMessage(null);
+							setIsError(false);
 						}, 2000);
 					});
 				return;
@@ -161,13 +165,12 @@ const App = () => {
 					setChangeMessage(null);
 				}, 2000);
 			})
-			.catch(() => {
+			.catch((err) => {
 				setIsError(true);
-				setChangeMessage(
-					`Information of ${newName} has already been removed from server`
-				);
+				setChangeMessage(err.response.data.error);
 				setTimeout(() => {
 					setChangeMessage(null);
+					setIsError(false);
 				}, 2000);
 			});
 	};
