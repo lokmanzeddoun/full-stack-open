@@ -1,9 +1,10 @@
-const { test, after, beforeEach } = require("node:test");
+const { test, after, beforeEach, describe } = require("node:test");
 const assert = require("assert");
 const supertest = require("supertest");
 const mongoose = require("mongoose");
 const app = require("../app");
 const Blog = require("../models/blogModel");
+const { log } = require("console");
 const api = supertest(app);
 const blogs = [
 	{
@@ -56,81 +57,120 @@ const blogs = [
 	},
 ];
 
-beforeEach(async () => {
-	await Blog.deleteMany({});
-	await Promise.all(
-		blogs.map((blog) => new Blog(blog)).map((item) => item.save())
-	);
-}, 10000);
+describe("when there is initially some blogs saved", () => {
+	beforeEach(async () => {
+		await Blog.deleteMany({});
+		await Promise.all(
+			blogs.map((blog) => new Blog(blog)).map((item) => item.save())
+		);
+	}, 10000);
+	test("blogs are returned as json ", async () => {
+		await api
+			.get("/api/blogs")
+			.expect(200)
+			.expect("Content-Type", /application\/json/);
+	});
+	test.only("all blogs are returned", async () => {
+		const response = await api.get("/api/blogs");
 
-test.only("blogs are returned as json ", async () => {
-	await api
-		.get("/api/blogs")
-		.expect(200)
-		.expect("Content-Type", /application\/json/);
+		assert.strictEqual(response.body.length, blogs.length);
+	});
 });
-test.only("all blogs are returned", async () => {
-	const response = await api.get("/api/blogs");
-
-	assert.strictEqual(response.body.length, blogs.length);
-});
-test.only("verify the unique identifier", async () => {
-	const blogs = await Blog.find({});
-	const result = blogs.map((blog) => blog.toJSON());
-	assert.notStrictEqual(result[0].id, undefined);
-});
-test.only("verify the create blog ", async () => {
-	const newBlog = {
-		title: "Data Structures Cheat Sheet",
-		author: "Matea Pesic",
-		url: "https://memgraph.com/blog/data-structures-cheat-sheet",
-		likes: 10,
-	};
-	await api
-		.post("/api/blogs")
-		.send(newBlog)
-		.expect(201)
-		.expect("Content-Type", /application\/json/);
-	const response = await api.get("/api/blogs");
-	assert.strictEqual(response.body.length, blogs.length + 1);
+describe("viewing a specific blog", () => {
+	test("verify the unique identifier", async () => {
+		const blogs = await Blog.find({});
+		const result = blogs.map((blog) => blog.toJSON());
+		assert.notStrictEqual(result[0].id, undefined);
+	});
 });
 
-test.only("test create blog without likes", async () => {
-	const newBlog = {
-		title: "Data Structures Cheat Sheet",
-		author: "Matea Pesic",
-		url: "https://memgraph.com/blog/data-structures-cheat-sheet",
-	};
-	await api
-		.post("/api/blogs")
-		.send(newBlog)
-		.expect(201)
-		.expect("Content-Type", /application\/json/);
-	const response = await api.get("/api/blogs");
-	assert.strictEqual(response.body.length, blogs.length + 1);
+describe("addition of new blog", () => {
+	test("verify the create blog ", async () => {
+		const newBlog = {
+			title: "Data Structures Cheat Sheet",
+			author: "Matea Pesic",
+			url: "https://memgraph.com/blog/data-structures-cheat-sheet",
+			likes: 10,
+		};
+		await api
+			.post("/api/blogs")
+			.send(newBlog)
+			.expect(201)
+			.expect("Content-Type", /application\/json/);
+		const response = await api.get("/api/blogs");
+		assert.strictEqual(response.body.length, blogs.length + 1);
+	});
+	test("test create blog without likes", async () => {
+		const newBlog = {
+			title: "Data Structures Cheat Sheet",
+			author: "Matea Pesic",
+			url: "https://memgraph.com/blog/data-structures-cheat-sheet",
+		};
+		await api
+			.post("/api/blogs")
+			.send(newBlog)
+			.expect(201)
+			.expect("Content-Type", /application\/json/);
+		const response = await api.get("/api/blogs");
+		assert.strictEqual(response.body.length, blogs.length + 1);
 
-	const likes = response.body.map((blog) => blog.likes);
-	assert(likes.includes(0));
+		const likes = response.body.map((blog) => blog.likes);
+		assert(likes.includes(0));
+	});
+	test("test create blog without title", async () => {
+		const newBlog = {
+			author: "Matea Pesic",
+			url: "https://memgraph.com/blog/data-structures-cheat-sheet",
+			likes: 5,
+		};
+		await api.post("/api/blogs").send(newBlog).expect(400);
+		const response = await api.get("/api/blogs");
+		assert.strictEqual(response.body.length, blogs.length);
+	});
+	test("test create blog without title", async () => {
+		const newBlog = {
+			title: "Data Structures Cheat Sheet",
+			author: "Matea Pesic",
+			likes: 5,
+		};
+		await api.post("/api/blogs").send(newBlog).expect(400);
+		const response = await api.get("/api/blogs");
+		assert.strictEqual(response.body.length, blogs.length);
+	});
 });
-test.only("test create blog without title", async () => {
-	const newBlog = {
-		author: "Matea Pesic",
-		url: "https://memgraph.com/blog/data-structures-cheat-sheet",
-		likes: 5,
-	};
-	await api.post("/api/blogs").send(newBlog).expect(400);
-	const response = await api.get("/api/blogs");
-	assert.strictEqual(response.body.length, blogs.length);
+
+describe("deletion of blog", () => {
+	test("delete a blog", async () => {
+		const response = await api.get("/api/blogs");
+		const blogToDelete = response.body[0];
+		await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+		const response2 = await api.get("/api/blogs");
+		assert.strictEqual(response2.body.length, blogs.length - 1);
+	});
 });
-test.only("test create blog without title", async () => {
-	const newBlog = {
-		title: "Data Structures Cheat Sheet",
-		author: "Matea Pesic",
-		likes: 5,
-	};
-	await api.post("/api/blogs").send(newBlog).expect(400);
-	const response = await api.get("/api/blogs");
-	assert.strictEqual(response.body.length, blogs.length);
+describe("update a blog", () => {
+	test("update the info of blog", async () => {
+		const response = await api.get("/api/blogs");
+		const blogToUpdate = response.body[0];
+
+		const newBlog = {
+			title: blogToUpdate.title,
+			author: blogToUpdate.author,
+			url: blogToUpdate.url,
+			likes: 100,
+		};
+		await api
+			.put(`/api/blogs/${blogToUpdate.id}`)
+			.send(newBlog)
+			.expect(200)
+			.expect("Content-Type", /application\/json/);
+		const response2 = await api.get("/api/blogs");
+
+		assert.strictEqual(response2.body.length, blogs.length);
+		// check the likes if changed
+		const likes = response2.body.map((blog) => blog.likes);
+		assert(likes.includes(newBlog.likes))
+	});
 });
 after(async () => {
 	await mongoose.connection.close();

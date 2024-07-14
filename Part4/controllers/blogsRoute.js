@@ -30,12 +30,14 @@ blogsRouter.get("/:id", async (request, response) => {
 	response.status(200).json(blog);
 });
 blogsRouter.delete("/:id", async (request, response) => {
-	await Blog.findByIdAndRemove(request.params.id);
+	await Blog.findByIdAndDelete(request.params.id);
 	response.status(204).end();
 });
 blogsRouter.put("/:id", async (request, response) => {
-	const blog = await Blog.findByIdAndUpdate(req.params.id, req.body);
+	const res = await Blog.findByIdAndUpdate(request.params.id, request.body, {
+		new: true,
+	});
 
-	response.status(200).json({ blog });
+	response.status(200).json(res);
 });
 module.exports = blogsRouter;
