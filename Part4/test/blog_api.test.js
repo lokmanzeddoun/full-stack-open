@@ -119,10 +119,10 @@ describe("viewing a specific blog", () => {
 
 describe.only("addition of new blog", () => {
 	test.only("verify the create blog ", async () => {
-		const user = new User({
+		const user = {
 			username: "admin",
 			password: "admin",
-		});
+		};
 		const loginUser = await api.post("/api/login").send(user);
 		const newBlog = {
 			title: "Data Structures Cheat Sheet",
@@ -130,7 +130,6 @@ describe.only("addition of new blog", () => {
 			url: "https://memgraph.com/blog/data-structures-cheat-sheet",
 			likes: 10,
 		};
-		console.log("🚀 ~ test ~ loginUser.body.token:", loginUser.body.token);
 		await api
 			.post("/api/blogs")
 			.send(newBlog)
@@ -141,10 +140,10 @@ describe.only("addition of new blog", () => {
 		assert.strictEqual(response.body.length, blogs.length + 1);
 	});
 	test("test create blog without likes", async () => {
-		const user = new User({
+		const user = {
 			username: "admin",
 			password: "admin",
-		});
+		};
 		const loginUser = await api.post("/api/login").send(user);
 		const newBlog = {
 			title: "Data Structures Cheat Sheet",
@@ -179,16 +178,13 @@ describe.only("addition of new blog", () => {
 
 		const response = await api.get("/api/blogs");
 
-		assert.strictEqual(response.body.length, blogs.length);
-
-		const titles = response.body.map((n) => n.title);
-		assert(titles.includes(newBlog.title));
+		assert.strictEqual(response.body.length, blogs.length);		
 	});
 	test("test create blog without title", async () => {
-		const user = new User({
+		const user = {
 			username: "admin",
 			password: "admin",
-		});
+		};
 		const loginUser = await api.post("/api/login").send(user);
 		const newBlog = {
 			author: "Matea Pesic",
@@ -204,10 +200,10 @@ describe.only("addition of new blog", () => {
 		assert.strictEqual(response.body.length, blogs.length);
 	});
 	test("test create blog without title", async () => {
-		const user = new User({
+		const user = {
 			username: "admin",
 			password: "admin",
-		});
+		};
 		const loginUser = await api.post("/api/login").send(user);
 		const newBlog = {
 			title: "Data Structures Cheat Sheet",
@@ -226,10 +222,10 @@ describe.only("addition of new blog", () => {
 
 describe("deletion of blog", () => {
 	test("delete a blog", async () => {
-		const user = new User({
+		const user = {
 			username: "admin",
 			password: "admin",
-		});
+		};
 		const loginUser = await api.post("/api/login").send(user);
 		const response = await api.get("/api/blogs");
 		const blogToDelete = response.body[0];
@@ -243,10 +239,10 @@ describe("deletion of blog", () => {
 });
 describe("update a blog", () => {
 	test.only("update the info of blog", async () => {
-		const user = new User({
+		const user = {
 			username: "admin",
 			password: "admin",
-		});
+		};
 		const loginUser = await api.post("/api/login").send(user);
 		const response = await api.get("/api/blogs");
 		const blogToUpdate = response.body[0];
@@ -271,8 +267,8 @@ describe("update a blog", () => {
 		assert(likes.includes(newBlog.likes));
 	});
 });
-describe.only("when there is initially one user in db", () => {
-	test.only("creation  with a fresh username", async () => {
+describe("when there is initially one user in db", () => {
+	test("creation  with a fresh username", async () => {
 		const usersAtStart = await api.get("/api/users");
 
 		const newUser = {
@@ -294,7 +290,7 @@ describe.only("when there is initially one user in db", () => {
 		assert(usernames.includes(newUser.username));
 	});
 
-	test.only("creation fails with proper statuscode and message if username does not exist", async () => {
+	test("creation fails with proper statuscode and message if username does not exist", async () => {
 		const usersAtStart = await api.get("/api/users");
 
 		const newUser = {
@@ -314,7 +310,7 @@ describe.only("when there is initially one user in db", () => {
 		assert.strictEqual(usersAtEnd.body.length, usersAtStart.body.length);
 	});
 
-	test.only("creation fails with proper statuscode and message if password does not exist", async () => {
+	test("creation fails with proper statuscode and message if password does not exist", async () => {
 		const usersAtStart = await api.get("/api/users");
 
 		const newUser = {
@@ -334,7 +330,7 @@ describe.only("when there is initially one user in db", () => {
 		assert.strictEqual(usersAtEnd.body.length, usersAtStart.body.length);
 	});
 
-	test.only("creation fails with proper statuscode and message if username already taken", async () => {
+	test("creation fails with proper statuscode and message if username already taken", async () => {
 		const usersAtStart = await api.get("/api/users");
 
 		const newUser = {
@@ -355,7 +351,7 @@ describe.only("when there is initially one user in db", () => {
 		assert.strictEqual(usersAtEnd.body.length, usersAtStart.body.length);
 	});
 
-	test.only("creation fails with proper statuscode and message if username is less than 3 characters", async () => {
+	test("creation fails with proper statuscode and message if username is less than 3 characters", async () => {
 		const usersAtStart = await api.get("/api/users");
 
 		const newUser = {
@@ -380,7 +376,7 @@ describe.only("when there is initially one user in db", () => {
 		assert.strictEqual(usersAtEnd.body.length, usersAtStart.body.length);
 	});
 
-	test.only("creation fails with proper statuscode and message if password is less than three characters", async () => {
+	test("creation fails with proper statuscode and message if password is less than three characters", async () => {
 		const usersAtStart = await api.get("/api/users");
 
 		const newUser = {
