@@ -1,10 +1,20 @@
-import React from "react";
 import { useState } from "react";
 
-const AddBlogForm = ({ handleSubmit }) => {
+const AddBlogForm = ({ createBlog }) => {
 	const [title, setTitle] = useState("");
 	const [author, setAuthor] = useState("");
 	const [url, setUrl] = useState("");
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		createBlog({
+			title,
+			author,
+			url,
+		});
+		setTitle("");
+		setAuthor("");
+		setUrl("");
+	};
 	return (
 		<div>
 			<h2>Create blog</h2>

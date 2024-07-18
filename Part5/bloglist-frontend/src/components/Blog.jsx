@@ -1,7 +1,11 @@
+import PropTypes from "prop-types";
 import { useState } from "react";
 const Blog = ({ blog, addLikes, deleteBlog }) => {
-	const [likes, setLikes] = useState("");
-
+	Blog.prototypes = {
+		blog: PropTypes.object.isRequired,
+		addLikes: PropTypes.func.isRequired,
+		deleteBlog: PropTypes.func.isRequired,
+	};
 	const blogStyle = {
 		paddingTop: 10,
 		paddingLeft: 2,

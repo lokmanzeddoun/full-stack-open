@@ -65,9 +65,8 @@ const App = () => {
 		}
 		setRefreshBlog(!refreshBlog);
 	};
-	const addBlog = async (e) => {
+	const addBlog =  async (blogObject) => {
 		blogRef.current.toggleVisibility();
-		e.preventDefault();
 		if (!user) {
 			setMessage(`You are not allowed to perform this action`);
 			setIsError(true);
@@ -77,15 +76,8 @@ const App = () => {
 			}, 2000);
 			return;
 		}
-		const data = {
-			title,
-			author,
-			url,
-			user: user.name,
-			likes,
-		};
 		try {
-			const res = await blogService.create(data);
+			const res = await blogService.create(blogObject);
 			setBlogs(blogs.concat(res));
 			setMessage(`a new  blog ${res.title} added by ${res.author} `);
 			setRefreshBlog(!refreshBlog);
@@ -132,7 +124,7 @@ const App = () => {
 				</div>
 			)}
 			<Togglable buttonLabel="create" ref={blogRef}>
-				<AddBlogForm handleSubmit={addBlog} />
+				<AddBlogForm createBlog={addBlog} />
 			</Togglable>
 			{blogs.map((blog) => (
 				<Blog
