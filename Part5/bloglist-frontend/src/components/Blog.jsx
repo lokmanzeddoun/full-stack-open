@@ -37,21 +37,25 @@ const Blog = ({ blog, addLikes, deleteBlog }) => {
 	};
 	return (
 		<div style={blogStyle}>
-			<div style={hideWhenVisible}>
-				{blog.title} {blog.author}
+			<div style={hideWhenVisible} className="whenHidden">
+				<span>{blog.title} </span>
+				<span>{blog.author} </span>
 				<button onClick={toggleVisibility}>view</button>
 			</div>
-			<div style={showWhenVisible}>
-				{blog.title} {blog.author}
-				<button onClick={toggleVisibility}>hide</button>
-				<p>{blog.url}</p>
-				<p>
-					{blog.likes}
-					<button onClick={handleLike}>like</button>
-				</p>
-				<p>{blog.user !== null && blog.user.name}</p>
-				<button onClick={handleDelete}>remove</button>
-			</div>
+			{visible ? (
+				<div style={showWhenVisible}>
+					<span>{blog.title} </span>
+					<span>{blog.author} </span>
+					<button onClick={toggleVisibility}>hide</button>
+					<p>{blog.url}</p>
+					<p>
+						{blog.likes}
+						<button onClick={handleLike}>like</button>
+					</p>
+					<p>{blog.user !== null && blog.user.name}</p>
+					<button onClick={handleDelete}>remove</button>
+				</div>
+			) : null}
 		</div>
 	);
 };
