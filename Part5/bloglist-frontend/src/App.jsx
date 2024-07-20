@@ -9,8 +9,7 @@ import AddBlogForm from "./components/AddBlogForm";
 const App = () => {
 	const blogRef = useRef();
 	const [blogs, setBlogs] = useState([]);
-	const [username, setUsername] = useState("");
-	const [password, setPassword] = useState("");
+
 	const [Message, setMessage] = useState(null);
 	const [isError, setIsError] = useState(null);
 	const [user, setUser] = useState(null);
@@ -28,16 +27,16 @@ const App = () => {
 			setBlogs(blogs);
 		});
 	}, [refreshBlog]);
-	const handleLogin = async (e) => {
-		e.preventDefault();
-		console.log("logging in with ", username, password);
+	const handleLogin = async (username, password) => {
 		try {
 			const res = await login({ username, password });
 			setUser(res);
-			setUsername("");
-			setPassword("");
 			window.localStorage.setItem("loggedUser", JSON.stringify(res));
 			blogService.setToken(res.token);
+			setMessage(`logged in ${res.name}`);
+			setTimeout(() => {
+				setMessage(null);
+			}, 2000);
 		} catch (error) {
 			setMessage("Wrong username or password");
 			setIsError(true);
@@ -65,7 +64,7 @@ const App = () => {
 		}
 		setRefreshBlog(!refreshBlog);
 	};
-	const addBlog =  async (blogObject) => {
+	const addBlog = async (blogObject) => {
 		blogRef.current.toggleVisibility();
 		if (!user) {
 			setMessage(`You are not allowed to perform this action`);
@@ -106,15 +105,7 @@ const App = () => {
 			<h2>blogs</h2>
 			<Notification message={Message} error={isError} />
 			{user === null ? (
-				<Togglable buttonLabel={`login`}>
-					<LoginForm
-						username={username}
-						password={password}
-						handleUsernameChange={({ target }) => setUsername(target.value)}
-						handlePasswordChange={({ target }) => setPassword(target.value)}
-						handleSubmit={handleLogin}
-					/>
-				</Togglable>
+				<LoginForm handleLogin={handleLogin} />
 			) : (
 				<div>
 					<p>{user.name} Logged-in</p>
