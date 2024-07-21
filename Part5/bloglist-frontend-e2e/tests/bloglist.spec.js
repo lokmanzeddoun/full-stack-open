@@ -1,7 +1,7 @@
 const { test, expect, beforeEach, describe } = require("@playwright/test");
 const { loginWith, createBlog } = require("./helper");
 describe("Blog app", () => {
-	beforeEach(async ({ page,request }) => {
+	beforeEach(async ({ page, request }) => {
 		await request.post("/api/testing/reset");
 		await request.post("/api/users", {
 			data: {
@@ -49,16 +49,14 @@ describe("Blog app", () => {
 		});
 
 		test("a new blog can be created", async ({ page }) => {
-			await createBlog(
-				page,
-				"How to Deploy a Web App",
-				"Beau Carnes",
-				"https://www.freecodecamp.org/news/how-to-deploy-a-web-app"
-			);
+			const blog = {
+				title: "How to Deploy a Web App",
+				author: "Beau Carnes",
+				url: "https://www.freecodecamp.org/news/how-to-deploy-a-web-app",
+			};
+			await createBlog(page, blog.title, blog.author, blog.url);
 			await expect(
-				page.getByText(
-					"a new blog How to Deploy a Web App added by Beau Carnes"
-				)
+				page.getByText(`a new blog ${blog.title} added by ${blog.author}`)
 			).toBeVisible();
 
 			await expect(page.getByRole("button", { name: "create" })).toBeVisible();
@@ -66,7 +64,26 @@ describe("Blog app", () => {
 				page.getByText("How to Deploy a Web App Beau Carnes")
 			).toBeVisible();
 			await expect(page.getByRole("button", { name: "view" })).toBeVisible();
-			
+		});
+	});
+	describe("And several blogs exists", () => {
+		beforeEach(async ({ page }) => {
+			await loginWith(page, "lukazed", "admin123");
+
+			await createBlog(page, "test-1", "lukazed", "http://test1.com");
+			await createBlog(page, "test-2", "lukazed", "http://test2.com");
+			await createBlog(page, "test-3", "lukazed", "http://test3.com");
+		});
+
+		test("the blog can be edited", async ({ page }) => {
+			const blog = page.locator(".blog").filter({ hasText: "test-1" });
+			await blog.getByRole("button", { name: "view" }).click();
+
+			await expect(blog.getByText("likes 0")).toBeVisible();
+			await blog.getByRole("button", { name: "like" }).click();
+
+			await expect(blog.getByText("likes 1")).toBeVisible();
+			await expect(blog.getByText("likes 0")).not.toBeVisible();
 		});
 	});
 });
