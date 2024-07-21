@@ -78,11 +78,8 @@ const App = () => {
 		try {
 			const res = await blogService.create(blogObject);
 			setBlogs(blogs.concat(res));
-			setMessage(`a new  blog ${res.title} added by ${res.author} `);
+			setMessage(`a new  blog ${res.title} added by ${res.author}`);
 			setRefreshBlog(!refreshBlog);
-			setTimeout(() => {
-				setMessage(null);
-			}, 2000);
 		} catch (error) {
 			setMessage(`You are not allowed to perform this action`);
 			setIsError(true);
