@@ -1,6 +1,6 @@
 import { createAnecdotes } from "../reducers/anecdoteReducer";
 import { useDispatch } from "react-redux";
-import { showNotification } from "../reducers/notificationReducer";
+import { setNotification } from "../reducers/notificationReducer";
 const AnecdoteForm = () => {
 	const dispatch = useDispatch();
 	const submitNewNote = async (e) => {
@@ -8,10 +8,7 @@ const AnecdoteForm = () => {
 		const content = e.target.anecdotes.value;
 		e.target.anecdotes.value = "";
 		dispatch(createAnecdotes(content));
-		dispatch(showNotification(`You added new anecdote "${content}"`));
-		setTimeout(() => {
-			dispatch(showNotification(""));
-		}, 5000);
+		dispatch(setNotification(`You added new anecdote "${content}"`,5));
 	};
 	return (
 		<div>
