@@ -4,6 +4,7 @@ const AnecdoteForm = () => {
 	const dispatch = useDispatch();
 	const submitNewNote = (e) => {
 		e.preventDefault();
+		console.log(e.target.anecdotes.value);
 		dispatch(createAnecdote(e.target.anecdotes.value));
 		e.target.anecdotes.value = "";
 	};
