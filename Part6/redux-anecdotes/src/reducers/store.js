@@ -3,7 +3,7 @@ import anecdoteReducer from "./anecdoteReducer";
 import filterReducer from "./filterReducer";
 const store = configureStore({
 	reducer: {
-		notes: anecdoteReducer,
+		anecdotes: anecdoteReducer,
 		filter: filterReducer,
 	},
 });
