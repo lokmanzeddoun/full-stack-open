@@ -8,6 +8,7 @@ services:
     volumes:
       - ./mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
       - ./mongo_data:/data/db
+    container_name: mongo
   redis:
     image: redis
     ports:
@@ -15,5 +16,19 @@ services:
     command: ["redis-server", "--appendonly", "yes"] # Overwrite the CMD
     volumes: # Declare the volume
       - ./redis_data:/data
+    container_name: redis
+  server:
+    image: todo-backend-dev
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./:/usr/src/app
+    ports:
+      - 3000:3000
+    environment:
+      - REDIS_URL=redis://127.0.0.1:16379
+      - MONGO_URL=mongodb://localhost:3456/the_database
+    container_name: todo-backend-dev
 volumes:
   mongo_data:
