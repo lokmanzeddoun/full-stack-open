@@ -27,7 +27,7 @@ services:
     ports:
       - 3000:3000
     environment:
-      - REDIS_URL=redis://127.0.0.1:16379
+      - REDIS_URL=redis://127.0.0.1:6379
       - MONGO_URL=mongodb://localhost:3456/the_database
     container_name: todo-backend-dev
 volumes:
