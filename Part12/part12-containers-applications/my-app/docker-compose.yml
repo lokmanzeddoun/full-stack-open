@@ -1,0 +1,46 @@
+services:
+  #  frontend
+  app:
+    image: bloglist-front-dev
+    build:
+      context: bloglist-frontend
+      dockerfile: Dockerfile 
+    volumes:
+      - ./bloglist-frontend/:/usr/src/app 
+    container_name: bloglist-frontend-dev 
+#    backend
+  mongo:
+    image: mongo
+    container_name: mongo
+    ports:
+      - 3456:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: the_database
+    volumes:
+      - ./bloglist-backend/mongo_data:/data/db # to persist data even after stopping and rerunning container / storing data outside of container
+  server:
+    image: bloglist-backend-dev
+    build:
+      context: bloglist-backend # The context will pick this directory as the "build context"
+      dockerfile: Dockerfile # This will simply tell which dockerfile to read
+    environment:
+      NODE_ENV: production # not needed - set inline
+      MONGODB_URI: mongodb+srv://lokmanezeddoun:lk17@phonebook.5jf0kb0.mongodb.net/phonebook?retryWrites=true&w=majority&appName=phonebook
+      SECRET: secret
+      PORT: 3003
+    volumes: # Declare the volume
+      - ./bloglist-backend/src/:/usr/src/app/src/
+    container_name: bloglist-backend-dev
+  #  reverse proxy
+  nginx:
+    image: nginx:1.20.1
+    volumes:
+      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 8080:80
+    container_name: reverse-proxy
+    depends_on:
+      - app
+      - server
