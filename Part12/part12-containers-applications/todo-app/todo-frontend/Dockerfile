@@ -1,11 +1,17 @@
 FROM node:20 AS build-stage
 WORKDIR /usr/src/app
 COPY . .
+ENV VITE_BACKEND_URL=http://localhost:8080/api/
 RUN npm ci
 RUN CI=true npm run test
-ENV VITE_BACKEND_URL=http://localhost:3000
 RUN npm run build
 
+
+FROM base as test
+
+COPY . .
+
+RUN CI=true npm run test
 # This is a new stage, everything before this is gone, except for the files that we want to COPY
 FROM nginx:1.25-alpine
 # COPY the directory dist from the build-stage to /usr/share/nginx/html
