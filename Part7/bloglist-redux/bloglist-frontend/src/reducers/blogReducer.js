@@ -10,13 +10,13 @@ const blogReducer = createSlice({
 		voteBlog(state, action) {
 			const id = action.payload.id;
 			const blogToChange = action.payload;
-			state.map((blog) => (blog.id === id ? blogToChange : blog));
+			return state.map((blog) => (blog.id === id ? blogToChange : blog));
 		},
 		appendBlog(state, action) {
-			state.push(action.payload);
+			return [...state, action.payload];
 		},
 		deleteBlog(state, action) {
-			state.filter((blog) => blog.id !== action.payload.id);
+			return state.filter((blog) => blog.id !== action.payload.id);
 		},
 	},
 });
