@@ -6,11 +6,13 @@ import Notification from "./components/Notification";
 import LoginForm from "./components/LoginForm";
 import Togglable from "./components/Togglable";
 import AddBlogForm from "./components/AddBlogForm";
+import { useDispatch } from "react-redux";
+import { setNotification } from "./reducers/notificationReducer";
 const App = () => {
 	const blogRef = useRef();
+	const dispatch = useDispatch();
 	const [blogs, setBlogs] = useState([]);
 
-	const [Message, setMessage] = useState(null);
 	const [isError, setIsError] = useState(null);
 	const [user, setUser] = useState(null);
 	const [refreshBlog, setRefreshBlog] = useState(false);
@@ -33,15 +35,11 @@ const App = () => {
 			setUser(res);
 			window.localStorage.setItem("loggedUser", JSON.stringify(res));
 			blogService.setToken(res.token);
-			setMessage(`logged in ${res.name}`);
-			setTimeout(() => {
-				setMessage(null);
-			}, 2000);
+			dispatch(setNotification(`logged in ${res.name}`, 2));
 		} catch (error) {
-			setMessage("Wrong username or password");
+			dispatch(setNotification("Wrong username or password", 2));
 			setIsError(true);
 			setTimeout(() => {
-				setMessage(null);
 				setIsError(null);
 			}, 2000);
 		}
@@ -55,10 +53,9 @@ const App = () => {
 		try {
 			await blogService.remove(id);
 		} catch (error) {
-			setMessage("Unauthorized Operation");
+			dispatch(setNotification("Unauthorized Operation", 2));
 			setIsError(true);
 			setTimeout(() => {
-				setMessage(null);
 				setIsError(null);
 			}, 2000);
 		}
@@ -67,10 +64,11 @@ const App = () => {
 	const addBlog = async (blogObject) => {
 		blogRef.current.toggleVisibility();
 		if (!user) {
-			setMessage(`You are not allowed to perform this action`);
+			dispatch(
+				setNotification(`You are not allowed to perform this action`, 2),
+			);
 			setIsError(true);
 			setTimeout(() => {
-				setMessage(null);
 				setIsError(null);
 			}, 2000);
 			return;
@@ -78,13 +76,16 @@ const App = () => {
 		try {
 			const res = await blogService.create(blogObject);
 			setBlogs(blogs.concat(res));
-			setMessage(`a new  blog ${res.title} added by ${res.author}`);
+			dispatch(
+				setNotification(`a new  blog ${res.title} added by ${res.author}`, 2),
+			);
 			setRefreshBlog(!refreshBlog);
 		} catch (error) {
-			setMessage(`You are not allowed to perform this action`);
+			dispatch(
+				setNotification(`You are not allowed to perform this action`, 2),
+			);
 			setIsError(true);
 			setTimeout(() => {
-				setMessage(null);
 				setIsError(null);
 			}, 2000);
 		}
@@ -93,14 +94,13 @@ const App = () => {
 		window.localStorage.clear();
 		setUser(null);
 		setTimeout(() => {
-			setMessage(null);
 			setIsError(null);
 		}, 2000);
 	};
 	return (
 		<div>
 			<h2>blogs</h2>
-			<Notification message={Message} error={isError} />
+			<Notification error={isError} />
 			{user === null ? (
 				<LoginForm handleLogin={handleLogin} />
 			) : (

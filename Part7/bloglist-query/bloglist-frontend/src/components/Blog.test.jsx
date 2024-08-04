@@ -14,7 +14,7 @@ describe("Blog Component", () => {
 			name: "test name",
 		},
 	};
-	const likesMockHandler = vi.fn();
+	const likesMockHandler = vi.fn()
 	beforeEach(() => {
 		render(<Blog key={blog.id} blog={blog} addLikes={likesMockHandler} />);
 	});
