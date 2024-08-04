@@ -16,8 +16,14 @@ const create = async (data) => {
 	const res = await axios.post(baseUrl, data, config);
 	return res.data;
 };
-const update = async (id, newObject) => {
-	const res = await axios.put(`${baseUrl}/${id}`, newObject);
+const update = async (newObject) => {
+	const obj = {
+		title: newObject.title,
+		author: newObject.author,
+		likes: newObject.likes,
+		url: newObject.url,
+	};
+	const res = await axios.put(`${baseUrl}/${newObject.id}`, obj);
 	return res.data;
 };
 
@@ -29,4 +35,4 @@ const remove = async (id) => {
 	const res = await axios.delete(`${baseUrl}/${id}`, config);
 	return res.data;
 };
-export default { getAll, create, setToken,remove,update };
+export default { getAll, create, setToken, remove, update };

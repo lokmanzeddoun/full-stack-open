@@ -1,10 +1,13 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
-const Blog = ({ blog, addLikes, deleteBlog, username }) => {
+import { useSelector, useDispatch } from "react-redux";
+import { likeBlog, removeBlog } from "../reducers/blogReducer";
+import { setNotification } from "../reducers/notificationReducer";
+const Blog = ({ blog }) => {
+	const dispatch = useDispatch();
+	const authUser = useSelector((state) => state.user);
 	Blog.prototypes = {
 		blog: PropTypes.object.isRequired,
-		addLikes: PropTypes.func.isRequired,
-		deleteBlog: PropTypes.func.isRequired,
 	};
 	const blogStyle = {
 		paddingTop: 10,
@@ -20,18 +23,14 @@ const Blog = ({ blog, addLikes, deleteBlog, username }) => {
 		setVisible(!visible);
 	};
 	const handleLike = () => {
-		const blogObject = {
-			title: blog.title,
-			author: blog.author,
-			url: blog.url,
-			likes: blog.likes + 1,
-		};
-		addLikes(blog.id, blogObject);
+		dispatch(likeBlog(blog));
+		dispatch(setNotification(`You vote like for ${blog.title}`, 2));
 	};
 
 	const handleDelete = () => {
 		if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-			deleteBlog(blog.id);
+			dispatch(removeBlog(blog.id));
+			dispatch(setNotification(`You Delete ${blog.title}`, 2));
 		}
 	};
 	return (
@@ -52,7 +51,7 @@ const Blog = ({ blog, addLikes, deleteBlog, username }) => {
 						<button onClick={handleLike}>like</button>
 					</p>
 					<p>{blog.user !== null && blog.user.name}</p>
-					{blog.user.username === username ? (
+					{blog.user.username === authUser.username ? (
 						<button onClick={handleDelete}>remove</button>
 					) : null}
 				</div>

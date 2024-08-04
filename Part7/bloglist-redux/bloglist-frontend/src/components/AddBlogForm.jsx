@@ -1,16 +1,30 @@
 import { useState } from "react";
-
-const AddBlogForm = ({ createBlog }) => {
+import { useDispatch } from "react-redux";
+import { setNotification } from "../reducers/notificationReducer";
+import { createBlog } from "../reducers/blogReducer";
+const AddBlogForm = () => {
+	const dispatch = useDispatch();
 	const [title, setTitle] = useState("");
 	const [author, setAuthor] = useState("");
 	const [url, setUrl] = useState("");
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		createBlog({
+		const blog = {
 			title,
 			author,
 			url,
-		});
+		};
+		try {
+			dispatch(createBlog(blog));
+			dispatch(
+				setNotification(`a new  blog ${blog.title} added	 by ${blog.author}`, 2),
+			);
+		} catch (error) {
+			dispatch(
+				setNotification(`You are not allowed to perform this action`, 2),
+			);
+			setIsError(2);
+		}
 		setTitle("");
 		setAuthor("");
 		setUrl("");
