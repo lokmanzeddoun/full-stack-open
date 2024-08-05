@@ -11,6 +11,7 @@ import UserDisplay from "./components/UserDisplay";
 import { Routes, Route, Link } from "react-router-dom";
 import User from "./components/User";
 import BlogDisplay from "./components/BlogDisplay";
+import { Nav, Container, Navbar, Button } from "react-bootstrap";
 const App = () => {
 	const dispatch = useDispatch();
 	const authUser = useSelector((state) => state.user);
@@ -38,22 +39,28 @@ const App = () => {
 	);
 	return (
 		<div>
-			<h2>blogs</h2>
-			<nav>
-				<Link to={"/"}>Home </Link>
-				<Link to={"/blogs"}>Blogs </Link>
-				<Link to={"/users"}>users </Link>
-				{authUser !== null ? (
-					<div>
-						<em> {authUser.name} logged in </em>
-						<button type="submit" onClick={handleLogout}>
-							Log Out
-						</button>
-					</div>
-				) : (
-					<Link to={"/login"}>login</Link>
-				)}
-			</nav>
+			<Navbar bg="primary" data-bs-theme="dark">
+				<Container>
+					<Navbar.Brand href="/">blogs</Navbar.Brand>
+					<Nav className="me-auto">
+						<Nav.Link href="/">Home</Nav.Link>
+						<Nav.Link href="/blogs">Blogs</Nav.Link>
+						<Nav.Link href="/users">users</Nav.Link>
+						{authUser !== null ? (
+							<Navbar.Collapse className="justify-content-end">
+								<Navbar.Text>
+									Logged in as: <Link to="/login">{authUser.name}</Link>
+								</Navbar.Text>
+								<Button type="submit" onClick={handleLogout} variant="primary">
+									Logout
+								</Button>
+							</Navbar.Collapse>
+						) : (
+							<Nav.Link href={"/login"}>Login</Nav.Link>
+						)}
+					</Nav>
+				</Container>
+			</Navbar>
 			<Notification />
 			<Routes>
 				<Route path="/" element={<Home />} />

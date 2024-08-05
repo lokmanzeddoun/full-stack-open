@@ -4,6 +4,7 @@ import { setNotification } from "../reducers/notificationReducer";
 import { createBlog } from "../reducers/blogReducer";
 import { setIsError } from "../reducers/errorReducer";
 import Togglable from "./Togglable";
+import { InputGroup, Form, Button } from "react-bootstrap";
 import { useRef } from "react";
 const AddBlogForm = () => {
 	const blogRef = useRef();
@@ -28,50 +29,56 @@ const AddBlogForm = () => {
 	};
 
 	return (
-		<div>
+		<Form onSubmit={handleSubmit}>
+			<h2>Create blog</h2>
 			<Togglable buttonLabel={`create blog`} ref={blogRef}>
-				<h2>Create blog</h2>
-				<form onSubmit={handleSubmit}>
-					<div>
-						Title:
-						<input
-							type="text"
-							name="title"
-							value={title}
-							data-testid="title"
-							onChange={(e) => {
-								setTitle(e.target.value);
-							}}
-						/>
-					</div>
-					<div>
-						Author:
-						<input
-							type="text"
-							name="author"
-							value={author}
-							data-testid="author"
-							onChange={(e) => {
-								setAuthor(e.target.value);
-							}}
-						/>
-					</div>
-					<div>
-						URL:
-						<input
-							type="text"
-							name="url"
-							value={url}
-							data-testid="url"
-							onChange={(e) => {
-								setUrl(e.target.value);
-							}}
-						/>
-					</div>
-					<button type="submit">create</button>
-				</form>
+				<InputGroup className="mb-3">
+					<InputGroup.Text id="basic-addon1">Title</InputGroup.Text>
+					<Form.Control
+						placeholder="Title"
+						aria-label="Title"
+						aria-describedby="basic-addon1"
+						name="title"
+						value={title}
+						data-testid="title"
+						onChange={(e) => {
+							setTitle(e.target.value);
+						}}
+					/>
+				</InputGroup>
+				<InputGroup className="mb-3">
+					<InputGroup.Text id="basic-addon1">Author</InputGroup.Text>
+					<Form.Control
+						placeholder="Author"
+						aria-label="Author"
+						aria-describedby="basic-addon1"
+						name="author"
+						value={author}
+						data-testid="author"
+						onChange={(e) => {
+							setAuthor(e.target.value);
+						}}
+					/>
+				</InputGroup>
+				<InputGroup className="mb-3">
+					<InputGroup.Text id="basic-addon3">
+						https://example.com/users/
+					</InputGroup.Text>
+					<Form.Control
+						placeholder="URL"
+						aria-label="URL"
+						aria-describedby="basic-addon1"
+						name="url"
+						value={url}
+						data-testid="url"
+						onChange={(e) => {
+							setUrl(e.target.value);
+						}}
+					/>
+				</InputGroup>
+				<Button type="submit">create</Button>
 			</Togglable>
-		</div>
+		</Form>
 	);
 };
 

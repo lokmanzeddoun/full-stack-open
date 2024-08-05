@@ -1,16 +1,23 @@
 import { useSelector } from "react-redux";
-import Blog from "./Blog";
+import { ListGroup } from "react-bootstrap";
 const BlogList = () => {
 	const blogs = useSelector((state) => {
 		return state.blogs.slice().sort((a, b) => b.likes - a.likes);
 	});
 
 	return (
-		<div>
+		<ListGroup>
 			{blogs.map((blog) => (
-				<Blog key={blog.id} blog={blog} />
+				<ListGroup.Item
+					action
+					variant="dark"
+					key={blog.id}
+					href={`/blogs/${blog.id}`}
+				>
+					{blog.title} {blog.author}
+				</ListGroup.Item>
 			))}
-		</div>
+		</ListGroup>
 	);
 };
 

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Login } from "../reducers/authReducer";
 import { initializeBlogs } from "../reducers/blogReducer";
+import { Button, Form } from "react-bootstrap";
 const LoginForm = () => {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
@@ -18,11 +19,12 @@ const LoginForm = () => {
 	return (
 		<div>
 			<h2>Log in into Application</h2>
-			<form onSubmit={handleLogin}>
-				<div>
-					Username{" "}
-					<input
+			<Form onSubmit={handleLogin}>
+				<Form.Group className="mb-3" controlId="formBasicEmail">
+					<Form.Label>Username</Form.Label>
+					<Form.Control
 						type="text"
+						placeholder="Enter username"
 						value={username}
 						name="username"
 						data-testid="username"
@@ -30,21 +32,25 @@ const LoginForm = () => {
 							setUsername(e.target.value);
 						}}
 					/>
-				</div>
-				<div>
-					Password{" "}
-					<input
-						type="text"
+				</Form.Group>
+
+				<Form.Group className="mb-3" controlId="formBasicPassword">
+					<Form.Label>Password</Form.Label>
+					<Form.Control
+						type="password"
+						placeholder="Password"
 						value={password}
-						name="password"
-						data-testid="password"
 						onChange={(e) => {
 							setPassword(e.target.value);
 						}}
+						name="password"
+						data-testid="password"
 					/>
-				</div>
-				<button type="submit">Login</button>
-			</form>
+				</Form.Group>
+				<Button variant="primary" type="submit">
+					Login
+				</Button>
+			</Form>
 		</div>
 	);
 };
