@@ -2,7 +2,11 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { setNotification } from "../reducers/notificationReducer";
 import { createBlog } from "../reducers/blogReducer";
+import { setIsError } from "../reducers/errorReducer";
+import Togglable from "./Togglable";
+import { useRef } from "react";
 const AddBlogForm = () => {
+	const blogRef = useRef();
 	const dispatch = useDispatch();
 	const [title, setTitle] = useState("");
 	const [author, setAuthor] = useState("");
@@ -31,6 +35,7 @@ const AddBlogForm = () => {
 	};
 	return (
 		<div>
+			<Togglable buttonLabel={`create blog`} ref={blogRef} />
 			<h2>Create blog</h2>
 			<form onSubmit={handleSubmit}>
 				<div>
