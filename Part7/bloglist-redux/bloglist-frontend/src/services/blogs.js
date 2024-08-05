@@ -6,8 +6,8 @@ const setToken = (newToken) => {
 	token = `Bearer ${newToken}`;
 };
 const getAll = async () => {
-	const request = axios.get(baseUrl);
-	return request.then((res) => res.data);
+	const res = await axios.get(baseUrl);
+	return res.data;
 };
 const create = async (data) => {
 	const config = {
@@ -35,4 +35,24 @@ const remove = async (id) => {
 	const res = await axios.delete(`${baseUrl}/${id}`, config);
 	return res.data;
 };
-export default { getAll, create, setToken, remove, update };
+const getComment = async (id) => {
+	const response = await axios.get(`${baseUrl}/${id}/comments`);
+	return response.data;
+};
+
+const getId = () => (100000 * Math.random()).toFixed(0);
+
+const postComment = async (id, content) => {
+	const object = { content, id: getId() };
+	const response = await axios.post(`${baseUrl}/${id}/comments`, object);
+	return response.data;
+};
+export default {
+	getAll,
+	create,
+	setToken,
+	remove,
+	update,
+	getComment,
+	postComment,
+};

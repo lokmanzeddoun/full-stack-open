@@ -14,7 +14,6 @@ blogsRouter.get("/", async (request, response) => {
 
 blogsRouter.post("/", async (request, response) => {
 	const user = request.user;
-  const comment = await Comment.findById(body.commentId)
 	if (!user) {
 		return response.status(401).json({ error: "token missing or invalid" });
 	}
@@ -27,14 +26,11 @@ blogsRouter.post("/", async (request, response) => {
 		url: request.body.url,
 		likes: request.body.likes ? request.body.likes : 0,
 		user: user.id,
-		comment:comment.id
 	});
 
 	const result = await blog.save();
 	user.blogs = user.blogs.concat(result._id);
 	await user.save();
-	comment.blogs = comment.blogs.concat(savedBlog._id);
-    await comment.save();
 
 	response.status(201).json(result);
 });

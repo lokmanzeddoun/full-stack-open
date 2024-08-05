@@ -44,13 +44,15 @@ const App = () => {
 				<Link to={"/blogs"}>Blogs </Link>
 				<Link to={"/users"}>users </Link>
 				{authUser !== null ? (
-					<em> {authUser.name} logged in </em>
+					<div>
+						<em> {authUser.name} logged in </em>
+						<button type="submit" onClick={handleLogout}>
+							Log Out
+						</button>
+					</div>
 				) : (
 					<Link to={"/login"}>login</Link>
 				)}
-				<button type="submit" onClick={handleLogout}>
-					Log Out
-				</button>
 			</nav>
 			<Notification />
 			<Routes>

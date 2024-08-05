@@ -4,6 +4,7 @@ import errorReducer from "./errorReducer";
 import blogReducer from "./blogReducer";
 import authReducer from "./authReducer";
 import usersReducer from "./userReducer";
+import commentReducer from "./comment";
 const store = configureStore({
 	reducer: {
 		notification: notificationReducer,
@@ -11,6 +12,7 @@ const store = configureStore({
 		blogs: blogReducer,
 		user: authReducer,
 		users: usersReducer,
+		comment: commentReducer,
 	},
 });
 export default store;
