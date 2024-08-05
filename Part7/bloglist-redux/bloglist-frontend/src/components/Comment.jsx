@@ -7,7 +7,7 @@ const Comment = ({ id }) => {
 	const dispatch = useDispatch();
 	useEffect(() => {
 		dispatch(initializeAllComments(id));
-	}, []);
+	}, [dispatch]);
 	const comments = useSelector((state) => state.comment);
 	return (
 		<div>

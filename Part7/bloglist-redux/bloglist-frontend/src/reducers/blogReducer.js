@@ -1,5 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import blogs from "../services/blogs";
+import { setNotification } from "./notificationReducer";
+import { setIsError } from "./errorReducer";
 const blogReducer = createSlice({
 	name: `blog`,
 	initialState: [],
@@ -46,8 +48,15 @@ export const likeBlog = (blog) => {
 
 export const createBlog = (blog) => {
 	return async (dispatch) => {
-		const res = await blogs.create(blog);
-		dispatch(appendBlog(res));
+		try {
+			const res = await blogs.create(blog);
+			dispatch(appendBlog(res));
+		} catch (error) {
+			dispatch(
+				setNotification(`You are not allowed to perform this action`, 2),
+			);
+			dispatch(setIsError(2));
+		}
 	};
 };
 export default blogReducer.reducer;

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setNotification } from "../reducers/notificationReducer";
 import { createBlog } from "../reducers/blogReducer";
 import { setIsError } from "../reducers/errorReducer";
@@ -18,21 +18,15 @@ const AddBlogForm = () => {
 			author,
 			url,
 		};
-		try {
-			dispatch(createBlog(blog));
-			dispatch(
-				setNotification(`a new  blog ${blog.title} added	 by ${blog.author}`, 2),
-			);
-		} catch (error) {
-			dispatch(
-				setNotification(`You are not allowed to perform this action`, 2),
-			);
-			setIsError(2);
-		}
+		dispatch(createBlog(blog));
+		dispatch(
+			setNotification(`a new  blog ${blog.title} added	 by ${blog.author}`, 2),
+		);
 		setTitle("");
 		setAuthor("");
 		setUrl("");
 	};
+
 	return (
 		<div>
 			<Togglable buttonLabel={`create blog`} ref={blogRef}>
