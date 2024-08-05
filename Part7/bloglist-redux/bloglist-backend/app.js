@@ -10,6 +10,7 @@ const middleware = require("./utils/middleware");
 const logger = require("./utils/logger");
 const mongoose = require("mongoose");
 const config = require("./utils/config");
+const commentsRouter = require("./controllers/commentRoute");
 mongoose.set("strictQuery", false);
 
 logger.info("connecting to", config.MONGODB_URI);
@@ -30,6 +31,7 @@ app.use(middleware.tokenExtractor);
 app.use(middleware.userExtractor);
 app.use(middleware.requestLogger);
 app.use("/api/blogs", blogsRouter);
+app.use("/api/blogs", commentsRouter);
 app.use("/api/users", userRouter);
 app.use("/api/login", loginRouter);
 app.use("/api/testing", testingRouter);

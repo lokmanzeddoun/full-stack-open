@@ -1,12 +1,6 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { likeBlog, removeBlog } from "../reducers/blogReducer";
-import { setNotification } from "../reducers/notificationReducer";
 import { Link } from "react-router-dom";
 const Blog = ({ blog }) => {
-	const dispatch = useDispatch();
-	const authUser = useSelector((state) => state.user);
 	Blog.prototypes = {
 		blog: PropTypes.object.isRequired,
 	};
