@@ -4,6 +4,7 @@ const { v1: uuid } = require("uuid");
 const mongoose = require("mongoose");
 const Book = require("./models/book");
 const Author = require("./models/author");
+const { GraphQLError } = require("graphql");
 require("dotenv").config();
 
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -59,7 +60,6 @@ const resolvers = {
 		authorCount: () => Author.collection.countDocuments(),
 		allBooks: async (root, args) => {
 			let filteredBook = await Book.find({}).populate("author");
-			console.log(filteredBook);
 			if (args.author) {
 				filteredBook = filteredBook.filter(
 					(a) => a.author.name === args.author
@@ -83,13 +83,32 @@ const resolvers = {
 	Mutation: {
 		addBook: async (root, args) => {
 			let author = await Author.findOne({ name: args.author });
-			console.log("🚀 ~ addBook: ~ author:", author);
 			if (!author) {
 				const newAuthor = new Author({ name: args.author });
-				author = await newAuthor.save();
+				try {
+					author = await newAuthor.save();
+				} catch (error) {
+					throw new GraphQLError(`name must be at least 4 `, {
+						extension: {
+							code: "BAD_USER_INPUT",
+							invalidArgs: args.author,
+							error,
+						},
+					});
+				}
 			}
 			const book = new Book({ ...args, author: author._id });
-			await book.save();
+			try {
+				await book.save();
+			} catch (error) {
+				throw new GraphQLError(`title must be at least 5 and unique`, {
+					extensions: {
+						code: "BAD_USER_INPUT",
+						invalidArgs: args.title,
+						error,
+					},
+				});
+			}
 			book.populate("author");
 			return book;
 		},
