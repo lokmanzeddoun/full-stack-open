@@ -21,7 +21,9 @@ export const UPDATE_BORN = gql`
 export const ALL_BOOKS = gql`
 	query {
 		allBooks {
-			author
+			author{
+			name
+			}
 			title
 			published
 		}
