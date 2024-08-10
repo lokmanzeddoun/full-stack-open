@@ -15,7 +15,10 @@ const ADD_NEW_BOOK = gql`
 			genres: $genres
 		) {
 			title
-			author
+			author{
+			name
+			born
+			}
 		}
 	}
 `;

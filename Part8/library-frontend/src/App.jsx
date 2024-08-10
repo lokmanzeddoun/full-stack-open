@@ -5,9 +5,20 @@ import NewBook from "./components/NewBook";
 import { Routes, Route, Link } from "react-router-dom";
 import LoginForm from "./components/LoginForm";
 import { useApolloClient } from "@apollo/client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Notification from "./components/Notification";
+import { useQuery } from "@apollo/client";
+import { ALL_BOOKS, USER } from "./queries";
+import Recommendation from "./components/Recomandation";
 const App = () => {
+	useEffect(() => {
+		let freshToken = localStorage.getItem("library-user-token");
+		if (freshToken) {
+			setToken(freshToken);
+		}
+	}, []);
+	const books = useQuery(ALL_BOOKS);
+	const user = useQuery(USER);
 	const [token, setToken] = useState(null);
 	const [errorMessage, setErrorMessage] = useState(null);
 	const client = useApolloClient();
@@ -38,6 +49,9 @@ const App = () => {
 							add book
 						</Link>
 						<button onClick={logout}>Log out</button>
+						<Link to={"/recommend"} style={padding}>
+							recommend
+						</Link>
 					</>
 				)}
 			</div>
@@ -49,8 +63,12 @@ const App = () => {
 					element={<LoginForm setToken={setToken} setError={setErrorMessage} />}
 				/>
 				<Route path="/authors" element={<Authors />} />
-				<Route path="/books" element={<Books />} />
+				<Route path="/books" element={<Books result={books} />} />
 				<Route path="/newBook" element={<NewBook />} />
+				<Route
+					path="/recommend"
+					element={<Recommendation result={books} user={user} />}
+				/>
 			</Routes>
 		</div>
 	);
