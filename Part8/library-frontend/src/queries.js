@@ -21,11 +21,19 @@ export const UPDATE_BORN = gql`
 export const ALL_BOOKS = gql`
 	query {
 		allBooks {
-			author{
-			name
+			author {
+				name
 			}
 			title
 			published
+		}
+	}
+`;
+
+export const LOGIN = gql`
+	mutation login($username: String!, $password: String!) {
+		login(username: $username, password: $password) {
+			value
 		}
 	}
 `;
