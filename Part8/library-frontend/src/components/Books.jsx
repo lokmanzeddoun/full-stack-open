@@ -2,15 +2,15 @@
 import { useState } from "react";
 const Books = ({ result }) => {
 	const [filter, setFilter] = useState("all genres");
+	if (result.loading) {
+		return <div>is Loading ....</div>;
+	}
 
 	const genreDuplicateArray = result.data.allBooks.map((b) => b.genres).flat();
 
 	const genres = [...new Set(genreDuplicateArray)];
 
 	genres.push("all genres");
-	if (result.loading) {
-		return <div>is Loading ....</div>;
-	}
 	const filteredBook = result.data.allBooks.filter((book) =>
 		filter === "all genres" ? book : book.genres.includes(filter)
 	);

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { gql, useMutation } from "@apollo/client";
-
+import { ALL_AUTHORS, ALL_BOOKS, BookDetails } from "../queries";
+import { updateCache } from "../App";
 const ADD_NEW_BOOK = gql`
 	mutation addBook(
 		$title: String!
@@ -14,13 +15,10 @@ const ADD_NEW_BOOK = gql`
 			published: $published
 			genres: $genres
 		) {
-			title
-			author{
-			name
-			born
-			}
+			...BookDetails
 		}
 	}
+	${BookDetails}
 `;
 const NewBook = () => {
 	const [title, setTitle] = useState("");
@@ -28,11 +26,19 @@ const NewBook = () => {
 	const [published, setPublished] = useState("");
 	const [genre, setGenre] = useState("");
 	const [genres, setGenres] = useState([]);
-	const [addBok] = useMutation(ADD_NEW_BOOK);
+	const [addBook] = useMutation(ADD_NEW_BOOK, {
+		refetchQueries: [{ query: ALL_AUTHORS }],
+		onError: (error) => {
+			console.log("error", error.graphQLErrors[0].message);
+		},
+		update: (cache, response) => {
+			updateCache(cache, { query: ALL_BOOKS }, response.data.addBook);
+		},
+	});
 	const submit = async (event) => {
 		const publishedNum = +published;
 		event.preventDefault();
-		addBok({ variables: { title, author, published: publishedNum, genres } });
+		addBook({ variables: { title, author, published: publishedNum, genres } });
 		setTitle("");
 		setPublished("");
 		setAuthor("");

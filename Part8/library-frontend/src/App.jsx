@@ -7,9 +7,26 @@ import LoginForm from "./components/LoginForm";
 import { useApolloClient } from "@apollo/client";
 import { useEffect, useState } from "react";
 import Notification from "./components/Notification";
-import { useQuery } from "@apollo/client";
-import { ALL_BOOKS, USER } from "./queries";
+import { useQuery, useSubscription } from "@apollo/client";
+import { ALL_BOOKS, BOOK_ADDED, USER } from "./queries";
 import Recommendation from "./components/Recomandation";
+
+export const updateCache = (cache, query, addedBook) => {
+	const uniqByTitle = (a) => {
+		let seen = new Set();
+		return a.filter((item) => {
+			let k = item.title;
+			return seen.has(k) ? false : seen.add(k);
+		});
+	};
+
+	cache.updateQuery(query, ({ allBooks }) => {
+		return {
+			allBooks: uniqByTitle(allBooks.concat(addedBook)),
+		};
+	});
+};
+
 const App = () => {
 	useEffect(() => {
 		let freshToken = localStorage.getItem("library-user-token");
@@ -17,6 +34,24 @@ const App = () => {
 			setToken(freshToken);
 		}
 	}, []);
+	useSubscription(BOOK_ADDED, {
+		onData: ({ data, client }) => {
+			console.log(data);
+			const addedBook = data.data.bookAdded;
+			try {
+				window.alert(`${addedBook.title} added`);
+				updateCache(client.cache, { query: ALL_BOOKS }, addedBook);
+			} catch {
+				console.log("error");
+			}
+
+			client.cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
+				return {
+					allBooks: allBooks.concat(addedBook),
+				};
+			});
+		},
+	});
 	const books = useQuery(ALL_BOOKS);
 	const user = useQuery(USER);
 	const [token, setToken] = useState(null);
