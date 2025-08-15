@@ -21,7 +21,7 @@ interface resultObject {
     average: number
 }
 
-function exerciseCalculator(exercices: number[], target: number): resultObject {
+export function exerciseCalculator(exercices: number[], target: number): resultObject {
     let sum = 0, trainingDays = 0;
     let success = true;
     for (const ex of exercices) {
@@ -53,14 +53,17 @@ function exerciseCalculator(exercices: number[], target: number): resultObject {
         average: avg
     }
 }
-try {
-    const arr = parse(process.argv)
-    console.log(exerciseCalculator(arr.slice(1), arr[0]))
-} catch (err: unknown) {
-    let errorMessage = 'Something bad happened.'
-    if (err instanceof Error) {
-        errorMessage += ' Error: ' + err.message;
+if (require.main == module) {
+
+    try {
+        const arr = parse(process.argv)
+        console.log(exerciseCalculator(arr.slice(1), arr[0]))
+    } catch (err: unknown) {
+        let errorMessage = 'Something bad happened.'
+        if (err instanceof Error) {
+            errorMessage += ' Error: ' + err.message;
+        }
+        console.log(errorMessage);
     }
-    console.log(errorMessage);
+    // console.log(exerciseCalculator([3, 0, 2, 4.5, 0, 3, 1], 2))
 }
-// console.log(exerciseCalculator([3, 0, 2, 4.5, 0, 3, 1], 2))
