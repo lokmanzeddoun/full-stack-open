@@ -1,3 +1,16 @@
+
+const parse = (args: string[]): number[] => {
+    if (args.length < 4) throw new Error('Not enough arguments');
+    // args.ts
+    return process.argv.slice(2).map(arg => {
+        const num = Number(arg);
+        if (isNaN(num)) {
+            throw new Error(`Invalid number: "${arg}"`);
+        }
+        return num;
+    });
+}
+
 interface resultObject {
     periodLength: number,
     trainingDays: number,
@@ -40,4 +53,14 @@ function exerciseCalculator(exercices: number[], target: number): resultObject {
         average: avg
     }
 }
-console.log(exerciseCalculator([3, 0, 2, 4.5, 0, 3, 1], 2))
+try {
+    const arr = parse(process.argv)
+    console.log(exerciseCalculator(arr.slice(1), arr[0]))
+} catch (err: unknown) {
+    let errorMessage = 'Something bad happened.'
+    if (err instanceof Error) {
+        errorMessage += ' Error: ' + err.message;
+    }
+    console.log(errorMessage);
+}
+// console.log(exerciseCalculator([3, 0, 2, 4.5, 0, 3, 1], 2))
