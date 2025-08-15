@@ -1,0 +1,15 @@
+{
+  "name": "part9",
+  "version": "1.0.0",
+  "description": "* This part is all about TypeScript: an open-source typed superset of JavaScript developed by Microsoft that compiles to plain JavaScript. *  TypeScript offers features such as better development-time tooling, static code analysis, compile-time type checking and code-level documentation. ---  TypeScript consists of three separate, but mutually fulfilling parts:",
+  "main": "index.js",
+  "scripts": {
+    "ts-node":"ts-node",
+    "calculateBmi":"ts-node bmiCalculator.ts",
+    "exerciseCalculator":"ts-node exerciseCalculator.ts"
+
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
