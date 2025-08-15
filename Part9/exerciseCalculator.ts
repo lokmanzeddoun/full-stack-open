@@ -24,7 +24,7 @@ interface resultObject {
 function exerciseCalculator(exercices: number[], target: number): resultObject {
     let sum = 0, trainingDays = 0;
     let success = true;
-    for (let ex of exercices) {
+    for (const ex of exercices) {
         if (ex > 0) { trainingDays += 1 }
         if (ex < target) (success = false)
         sum += ex
@@ -33,7 +33,7 @@ function exerciseCalculator(exercices: number[], target: number): resultObject {
     let rating = 1
 
     let ratingDescription = ""
-    let avg = sum / exercices.length
+    const avg = sum / exercices.length
     if (avg >= target) {
         rating = 3
         ratingDescription = "well done keep going"
