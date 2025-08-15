@@ -19,7 +19,7 @@ const parseArguments = (args: string[]): BMIValues => {
 
 
 
-function calculateBmi(height: number, weight: number): string {
+export function calculateBmi(height: number, weight: number): string {
     let bmi = weight / (((height / 100) ** 2))
     if (bmi <= 18.5) {
         return "Underweight range"
@@ -34,13 +34,16 @@ function calculateBmi(height: number, weight: number): string {
         return "Obeese range"
     }
 }
-try {
-    const { value1, value2 } = parseArguments(process.argv);
-    console.log(calculateBmi(value1, value2));
-} catch (error: unknown) {
-    let errorMessage = 'Something bad happened.'
-    if (error instanceof Error) {
-        errorMessage += ' Error: ' + error.message;
+if (require.main == module) {
+
+    try {
+        const { value1, value2 } = parseArguments(process.argv);
+        console.log(calculateBmi(value1, value2));
+    } catch (error: unknown) {
+        let errorMessage = 'Something bad happened.'
+        if (error instanceof Error) {
+            errorMessage += ' Error: ' + error.message;
+        }
+        console.log(errorMessage);
     }
-    console.log(errorMessage);
-} 
+}
