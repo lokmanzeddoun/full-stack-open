@@ -1,5 +1,5 @@
 import { Diagnosis } from "../type";
-import diagnoseData from "../../data/diagnoses";
+import diagnoseData from "../data/diagnoses";
 
 
 const fetchDiagnoses = (): Diagnosis[] => {
