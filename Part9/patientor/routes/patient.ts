@@ -1,8 +1,9 @@
 import express from 'express';
 import patientService from '../services/patientService';
 const router = express.Router();
-
-router.get('/', (_req, res) => {
+import { Response } from 'express';
+import { NonSensetivePatientEntry } from '../type';
+router.get('/', (_req, res: Response<NonSensetivePatientEntry[]>) => {
     res.send(patientService.fetchAll());
 });
 
